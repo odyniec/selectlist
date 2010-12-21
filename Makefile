@@ -9,16 +9,16 @@ RELEASE=$(BASIC:.js=-$(VERSION))
 all: $(BASIC) $(MINIFIED) $(PACKED)
 
 $(BASIC): $(SOURCE)
-	../tools/strip-comments-simple.pl $< > $@
+	../../tools/strip-comments-simple.pl $< > $@
 
 $(MINIFIED): $(BASIC)
-	cat $< | perl -I ../tools/packer2.perl -- \
-		../tools/packer2.perl/jsPacker.michal.pl -q -e0 > $@
+	cat $< | perl -I ../../tools/packer2.perl -- \
+		../../tools/packer2.perl/jsPacker.michal.pl -q -e0 > $@
 
 $(PACKED): $(BASIC)
-	java -cp ../tools -jar ../tools/shrinksafe.jar $< \
-		| perl -I ../tools/packer2.perl -- \
-		../tools/packer2.perl/jsPacker.michal.pl -q -e62 > $@
+	java -cp ../../tools -jar ../../tools/shrinksafe.jar $< \
+		| perl -I ../../tools/packer2.perl -- \
+		../../tools/packer2.perl/jsPacker.michal.pl -q -e62 > $@
 
 dist: $(BASIC) $(MINIFIED) $(PACKED)
 	rm -rf "dist/$(RELEASE)" "dist/$(RELEASE).zip"

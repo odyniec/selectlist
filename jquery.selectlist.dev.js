@@ -1,6 +1,6 @@
 /*
  * selectList jQuery plugin
- * version 0.3.3
+ * version 0.4
  *
  * Copyright (c) 2009-2010 Michal Wojciechowski (odyniec.net)
  *
@@ -11,14 +11,15 @@
  *
  */
 
-(function($) {
+(function ($) {
 
-$.selectList = function(select, options) {
+$.selectList = function (select, options) {
+    /* Variables starting with $ are jQuery objects */
     var 
-        /* Select element name */
-        name = $(select).attr('name'),
-    
-        /* jQuery object representing the list of selected options */
+        /* Single select element (drop-down list) */
+        $selectSingle,
+        
+        /* List of selected options */
         $list,
         
         /* List items */
@@ -44,7 +45,7 @@ $.selectList = function(select, options) {
         
         /* Flags for keeping track of events */
         change, click, keypress, enter;
-        
+
     /**
      * Make list item visible.
      * 
@@ -56,13 +57,13 @@ $.selectList = function(select, options) {
     function show($item, callback) {
         if (options.addAnimate && ready)
             if (typeof options.addAnimate == 'function')
-                options.addAnimate($item.hide().get(0), callback);
+                options.addAnimate($item.hide()[0], callback);
             else
                 $item.hide().fadeIn(300, callback);
         else {
             $item.show();
             if (callback)
-                callback.call($item.get(0));
+                callback.call($item[0]);
         }
     }
 
@@ -77,13 +78,13 @@ $.selectList = function(select, options) {
     function hide($item, callback) {
         if (options.removeAnimate && ready)
             if (typeof options.removeAnimate == 'function')
-                options.removeAnimate($item.get(0), callback);
+                options.removeAnimate($item[0], callback);
             else
                 $item.fadeOut(300, callback);
         else {
             $item.hide();
             if (callback)
-                callback.call($item.get(0));
+                callback.call($item[0]);
         }
     }
 
@@ -101,7 +102,8 @@ $.selectList = function(select, options) {
     function cmp(item1, item2) {
         return typeof options.sort == 'function' ?
             /*
-             * A custom sort function is provided -- use it to compare the items
+             * A custom sort function is provided -- use it to compare the two
+             * items.
              */
             options.sort(item1, item2)
             /*
@@ -126,8 +128,6 @@ $.selectList = function(select, options) {
      *            added.
      */
     function add(value, text, callHandler) {
-        $option = null;
-        
         /* Check if an <option> element was passed */
         if ($(value).is('option')) {
             $option = $(value);
@@ -136,63 +136,73 @@ $.selectList = function(select, options) {
              * If this is the first option that serves as a hint, we don't want
              * to really add it.
              */
-            if ($option.get(0).index < first)
+            if ($option[0].index < first)
                 return;
-
-            /* If duplicates are not allowed, disable the option */
-            if (!options.duplicates)
-                $option.attr('disabled', 'disabled')
-                    /*
-                     * IE6 does not support the "disabled" attribute, so we'll
-                     * set our own flag as a workaround
-                     */
-                    .data('disabled', 1);
             
             /* Extract value and text */
             value = $option.val();
             text = $option.text();
         }
+        else {
+            /*
+             * Find the option with the given value (and possibly text) in the
+             * select element.
+             */
+            $option = $selectSingle.find("option[value=\"" + 
+                    value.replace("'", "\\\"") + "\"]");
 
+            if ($option.length)
+                $option = $option.filter(function () {
+                    return !text || $(this).text() == text;
+                })
+                .add($option).eq(0);
+            else
+                $option = null;
+        }
+        
+        if (text === undefined)
+            text = $option ? $option.text() : value;
+        
+        /* If duplicates are not allowed, disable the option */
+        if ($option && !options.duplicates)
+            $option.attr('disabled', 'disabled')
+                /*
+                 * IE6 does not support the "disabled" attribute, so we'll set
+                 * our own flag as a workaround.
+                 */
+                .data('disabled', 1);
+            
         /*
          * Create the new list item based on the template, and make it hidden.
          * The $('<b/>').text(text).html() part is a trick to convert special
-         * characters (like "<" and ">") to HTML entities.
+         * characters (like "<" and ">") into HTML entities.
          */
         $newItem = $(options.template.replace(/%text%/g,
             $('<b/>').text(text).html()).replace(/%value%/g, value)).hide();
 
         /*
-         * Insert a hidden input element into the new item, give it the same
-         * name attribute as the original <select> element, and set its value.
-         */
-        $('<input type="hidden" />').appendTo($newItem)
-                .attr({name: name, value: value});
-
-        /*
          * Save the text, value, and the option element (if it was passed) for
          * later use.
          */
-        $newItem.data('value', value).data('text', text);
-        if ($option)
-            $newItem.data('option', $option);
-        
-        $newItem.addClass(options.classPrefix + '-item');
+        $newItem.data('value', value).data('text', text).data('option', $option)
+            /* Add class name */
+            .addClass(options.classPrefix + '-item');
 
         /*
          * If the clickRemove option is enabled, add a click event handler that
          * removes the item.
          */
-        if (options.clickRemove)
-            $newItem.click(function () {
+        $newItem.click(function () {
+            if (options.clickRemove)
                 remove($(this));
-            });
+        });
         
         /*
          * If there is a hint (first == 1), set it back as the selected option
          * in the select element.
          */
         if (first && !keypress)
-            select.selectedIndex = 0;
+            $selectSingle[0].selectedIndex = 0;
 
         /* Callback function that will be called after the item is added */
         var callback = function () {
@@ -206,7 +216,7 @@ $.selectList = function(select, options) {
              * first item which is greater (as determined by the cmp() function)
              * than the new item, and insert the new item right before it.
              */
-            while ($item.length && cmp($newItem.get(0), $item.get(0)))
+            while ($item.length && cmp($newItem[0], $item[0]))
                 $item = $item.next();
             
             show($item.length ? $newItem.insertBefore($item)
@@ -215,6 +225,13 @@ $.selectList = function(select, options) {
         else
             /* Otherwise, append the new element at the end of the list. */
             show($newItem.appendTo($list), callback);
+        
+        $(select).empty();
+        
+        $list.children().each(function () {
+            $(select).append($("<option/>").attr({ value: $(this).data('value'),
+                    selected: "selected" }));
+        });
         
         checkValidation();
     }
@@ -240,6 +257,8 @@ $.selectList = function(select, options) {
             
             $(this).remove();
             
+            $(select).find("option[value=\"" + value + "\"]").remove();
+            
             checkValidation();
             
             if (callHandler !== false)
@@ -252,9 +271,10 @@ $.selectList = function(select, options) {
      * select element if it is marked as being invalid. 
      */
     function checkValidation() {
-        if ($(select.form).validate && $(select).is('.' + 
-                $(select.form).validate().settings.errorClass))
-            $(select.form).validate().element(select);
+          if (select.form && typeof ($(select.form).validate) == "function" &&
+                  $(select).add($selectSingle).hasClass($(select.form)
+                          .validate().settings.errorClass))
+              $(select.form).validate().element(select);
     }
     
     /* Publicly available methods */
@@ -266,14 +286,7 @@ $.selectList = function(select, options) {
      * @returns An array of values corresponding to the selected options
      */
     this.val = function () {
-        var values = [];
-        
-        $list.find('input[name=' + name + ']')
-            .each(function () {
-                values.push($(this).val());
-            });
-
-        return values;
+        return $(select).val();
     };
     
     /**
@@ -289,7 +302,7 @@ $.selectList = function(select, options) {
     };
     
     /**
-     * Remove the item (or multiple items) with the given name from the
+     * Remove the item (or multiple items) with the given value from the
      * selection.
      * 
      * @param value
@@ -318,11 +331,17 @@ $.selectList = function(select, options) {
         /* Merge the new options with the existing ones */
         options = $.extend(options, newOptions);
 
-        /* Re-sort the list */
-        if (sort)
-            $list.children().slice(first).each(function () {
-                add($(this).data('value'), $(this).data('text'), false);
-            }).remove();
+        /* Re-sort the list by emptying it and re-adding all the items */
+        if (sort) {
+            var items = [];
+            $list.children().each(function () {
+                items[items.length] = $(this).data('value')
+                items[items.length] = $(this).data('text');
+            });
+            $list.empty();
+            for (var i = 0; i < items.length; i += 2)
+                add(items[i], items[i+1], false);
+        }
     };
 
     /* Initialization starts here */
@@ -336,47 +355,57 @@ $.selectList = function(select, options) {
         onAdd: function () {},
         onRemove: function () {}
     }, options));
-    
+
+    /*
+     * Create the single select element by cloning the original multiple select.
+     */
+    $selectSingle = $(select).clone();
+    $selectSingle.removeAttr('id').removeAttr('name')
+        .addClass(options.classPrefix + '-select').insertAfter($(select));
+    /* Remove all the options inside the original select, and make it hidden */
+    $(select).empty().hide();
+
     /* Get the list element from options or create a new one */
-    ($list = $(options.list || $('<ul />').insertAfter($(select))))
+    ($list = $(options.list || $("<ul/>").insertAfter($selectSingle)))
         .addClass(options.classPrefix + '-list');
 
     /* Add pre-selected options to the list */
-    $(select).find(':selected').each(function () {
+    $selectSingle.find(':selected').each(function () {
         add($(this), null, false);
     });
 
     /*
-     * Strip the "multiple" attribute from the original select element to turn
-     * it into a drop-down list.
+     * Strip the "multiple" and "size" attributes from the original select
+     * element to turn it into a drop-down list.
      */
-    $(select).removeAttr('multiple').removeAttr('size');
-    
-    /* If there is a "title" attribute, we add it as a hint option. */
-    if ($(select).attr('title')) {
-        $(select).prepend($('<option />').text($(select).attr('title')));
+    $selectSingle.removeAttr('multiple').removeAttr('size');
+
+    /* If there is a "title" attribute, we add it as the hint option. */
+    if ($selectSingle.attr("title")) {
+        $selectSingle.prepend($("<option/>")
+                .text($selectSingle.attr("title")));
         first = 1;
         /* 
          * We could set the "selected" attribute for the option element above,
          * but IE7 and IE8 seem to ignore it, so we need to set the hint with
-         * select.selectedIndex.
+         * the selectedIndex property.
          */ 
-        select.selectedIndex = 0;
+        $selectSingle[0].selectedIndex = 0;
     }
 
     /*
-     * In MSIE and WebKit, we need to use the keydown event instead of keypress
+     * In MSIE and WebKit, we need to use the keydown event instead of keypress.
      */
     keyEvent = $.browser.msie || $.browser.safari ? 'keydown' : 'keypress';
     
-    $(select).bind(keyEvent, function (event) {
+    $selectSingle.bind(keyEvent, function (event) {
         keypress = true;
         
         /* Check if Enter has been pressed */
         if ((event.keyCode || event.which) == 13) {
             enter = true;
             /* Trigger the change event */
-            $(select).change();
+            $selectSingle.change();
             keypress = true;
             /* Return false to prevent form submission */
             return false;
@@ -386,8 +415,8 @@ $.selectList = function(select, options) {
         if (!keypress && !click) return;
         change = true;
         /* Get the currently selected option */
-        $option = $(select).find('option:selected');
-        if (!$option.data('disabled') && (!keypress || enter))
+        $option = $selectSingle.find("option:selected");
+        if (!$option.data("disabled") && (!keypress || enter))
             add($option);
         
         if (keypress)
@@ -412,7 +441,7 @@ $.selectList = function(select, options) {
      * This is only supported in browsers that report click events for option
      * elements (works in FF3 and Opera, does not work in MSIE and Chrome).
      */
-    $(select).find('option').click(function (event) {
+    $selectSingle.find('option').click(function (event) {
         /*
          * In Firefox, clicking the select element to open the list of options
          * sometimes triggers the click event handler for the item that's
@@ -420,16 +449,18 @@ $.selectList = function(select, options) {
          * list. To prevent this, we need to exit the handler if the click has
          * occurred within the select element's boundaries.
          */
-        if ($.browser.mozilla && event.pageX >= $(select).offset().left &&
-                event.pageX <= $(select).offset().left + $(select).outerWidth() &&
-                event.pageY >= $(select).offset().top &&
-                event.pageY <= $(select).offset().top + $(select).outerHeight())
+        if ($.browser.mozilla && event.pageX >= $selectSingle.offset().left &&
+                event.pageX <= $selectSingle.offset().left + 
+                    $selectSingle.outerWidth() &&
+                event.pageY >= $selectSingle.offset().top &&
+                event.pageY <= $selectSingle.offset().top + 
+                    $selectSingle.outerHeight())
             return false;
         
         click = true;
         
-        if (!($(this).attr('disabled') || $(this).data('disabled')
-                || keypress || change)) 
+        if (!($(this).attr('disabled') || $(this).data('disabled') || keypress
+                || change)) 
             add($(this));
         
         if (!keypress)
@@ -438,42 +469,7 @@ $.selectList = function(select, options) {
         return false;
     });
     
-    $(select.form).submit(function () {
-        /*
-         * We discard the "name" attribute to prevent the select element's value
-         * from being transmitted along with the selected options.
-         * 
-         * If the jQuery Validation plugin is used
-         * (http://docs.jquery.com/Plugins/Validation), remove the attribute
-         * only after the form has been successfully validated.
-         */
-        if ($(select.form).validate && !$(select.form).valid())
-            return;
-
-        $(select).removeAttr('name');
-    });
-    
-    /*
-     * This prevents the browser from pre-populating the list with the last
-     * selected option when the page is reloaded.
-     */
-    $(window).bind('beforeunload', function () {
-        $(select).removeAttr('name');
-    });
-    
-    /*
-     * Override the Validation plugin's .getLength() method to return the number
-     * of selected items for a select element with selectList attached.
-     */
-    if ($.validator) {
-        validatorGetLength = $.validator.prototype.getLength;        
-        $.validator.prototype.getLength = function (value, element) {
-            return $(element).is('select') && $(element).data('selectList') ?
-                $(element).data('selectList').val().length
-                : validatorGetLength(value, element);
-        };
-    }
-
+    /* Ready for action */
     ready = true;
 };
 
@@ -502,21 +498,9 @@ $.fn.selectList = function (options) {
         /*
          * Return the selectList instance bound to the first element in the set.
          */
-        return $(this).filter('select').data('selectList');
+        return this.filter('select').data('selectList');
 
     return this;
 };  
-
-var jQueryVal = $.fn.val, validatorGetLength;
-
-/*
- * Override the core jQuery method .val() to return the correct array of values
- * when .val() is called on a multiple selection element with selectList
- * attached.
- */
-$.fn.val = function (value) {
-    return (typeof value == 'undefined' && this.data('selectList') ?
-        this.data('selectList').val : jQueryVal).call(this, value);
-};
 
 })(jQuery);
