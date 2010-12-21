@@ -26,8 +26,6 @@ dist: $(BASIC) $(MINIFIED) $(PACKED)
 	cp -r distfiles/* "dist/$(RELEASE)"
 	mkdir -p "dist/$(RELEASE)/scripts"
 	cp "$(BASIC)" "$(MINIFIED)" "$(PACKED)" "dist/$(RELEASE)/scripts"
-	cp ../GPL-LICENSE.txt "dist/$(RELEASE)"
-	cp ../MIT-LICENSE.txt "dist/$(RELEASE)"
 	cd dist && \
 		zip -r "$(RELEASE).zip" "$(RELEASE)" && \
 		cd -
