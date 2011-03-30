@@ -1,8 +1,8 @@
 /*
  * selectList jQuery plugin
- * version 0.4
+ * version 0.4.1
  *
- * Copyright (c) 2009-2010 Michal Wojciechowski (odyniec.net)
+ * Copyright (c) 2009-2011 Michal Wojciechowski (odyniec.net)
  *
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
@@ -378,7 +378,12 @@ $.selectList = function (select, options) {
      * Strip the "multiple" and "size" attributes from the original select
      * element to turn it into a drop-down list.
      */
-    $selectSingle.removeAttr('multiple').removeAttr('size');
+    $selectSingle.removeAttr('multiple');
+    /* 
+     * Firefox 4 throws an error on removeAttr('size'), so we need to use the
+     * removeAttribute() DOM method instead.
+     */
+    $selectSingle.get(0).removeAttribute('size');
 
     /* If there is a "title" attribute, we add it as the hint option. */
     if ($selectSingle.attr("title")) {

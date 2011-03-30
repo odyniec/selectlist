@@ -4,7 +4,7 @@ module("Basic");
 
 test("Initialization", function () {
     expect(6);
-    
+
     $('#t').append('<form id="f1">' +
             '<input id="i1" type="hidden" name="i" value="1" />' +
             '<select id="s1" name="s" multiple="multiple" title="Title">' +
@@ -15,9 +15,9 @@ test("Initialization", function () {
             '</form>');
     
     var serializedForm = $('#f1').serialize();
-    
+
     $('#s1').selectList();
-    
+
     ok($('#s1').selectList({ instance: true }) instanceof jQuery.selectList,
             'Check if "instance: true" returns an instance of ' +
             'jQuery.selectList');
