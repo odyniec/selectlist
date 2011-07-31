@@ -1,6 +1,6 @@
 /*
  * selectList jQuery plugin
- * version 0.4.1
+ * version 0.4.2
  *
  * Copyright (c) 2009-2011 Michal Wojciechowski (odyniec.net)
  *
@@ -310,7 +310,7 @@ $.selectList = function (select, options) {
      */
     this.remove = function (value) {
         $list.children().each(function () {
-            if ($(this).data('value') == value)
+            if ($(this).data('value') == value || typeof value == 'undefined')
                 remove($(this));
         });
     };

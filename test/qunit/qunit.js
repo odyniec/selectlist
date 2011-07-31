@@ -1,4 +1,4 @@
-/*
+/**
  * QUnit - A JavaScript Unit Testing Framework
  * 
  * http://docs.jquery.com/QUnit
@@ -154,9 +154,9 @@ Test.prototype = {
 			// store result when possible
 			if ( QUnit.config.reorder && defined.sessionStorage ) {
 				if (bad) {
-					sessionStorage.setItem("qunit-" + this.module + "-" + this.testName, bad)
+					sessionStorage.setItem("qunit-" + this.module + "-" + this.testName, bad);
 				} else {
-					sessionStorage.removeItem("qunit-" + this.testName);
+					sessionStorage.removeItem("qunit-" + this.module + "-" + this.testName);
 				}
 			}
 
@@ -536,9 +536,9 @@ extend(QUnit, {
 	 */
 	reset: function() {
 		if ( window.jQuery ) {
-			jQuery( "#main, #qunit-fixture" ).html( config.fixture );
+			jQuery( "#qunit-fixture" ).html( config.fixture );
 		} else {
-			var main = id( 'main' ) || id( 'qunit-fixture' );
+			var main = id( 'qunit-fixture' );
 			if ( main ) {
 				main.innerHTML = config.fixture;
 			}
@@ -730,7 +730,7 @@ addEvent(window, "load", function() {
 		toolbar.appendChild( label );
 	}
 
-	var main = id('main') || id('qunit-fixture');
+	var main = id('qunit-fixture');
 	if ( main ) {
 		config.fixture = main.innerHTML;
 	}
