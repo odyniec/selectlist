@@ -1,8 +1,8 @@
 /*
  * selectList jQuery plugin
- * version 0.4.2
+ * version 0.5
  *
- * Copyright (c) 2009-2011 Michal Wojciechowski (odyniec.net)
+ * Copyright (c) 2009-2012 Michal Wojciechowski (odyniec.net)
  *
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
@@ -58,10 +58,16 @@ $.selectList = function (select, options) {
         if (options.addAnimate && ready)
             if (typeof options.addAnimate == 'function')
                 options.addAnimate($item.hide()[0], callback);
-            else
+            else {
                 $item.hide().fadeIn(300, callback);
+                /*
+                 *  .fadeIn() and .show() seem to set style.display to "block",
+                 *  which is definitely not what we want.
+                 */
+                $item[0].style.display = '';
+            }
         else {
-            $item.show();
+            $item[0].style.display = '';
             if (callback)
                 callback.call($item[0]);
         }
@@ -201,8 +207,8 @@ $.selectList = function (select, options) {
          * If there is a hint (first == 1), set it back as the selected option
          * in the select element.
          */
-        if (first && !keypress)
-            $selectSingle[0].selectedIndex = 0;
+//        if (first && !keypress)
+//            $selectSingle[0].selectedIndex = 0;
 
         /* Callback function that will be called after the item is added */
         var callback = function () {
@@ -265,30 +271,48 @@ $.selectList = function (select, options) {
                 options.onRemove(select, value, text);
         });
     }
-    
+
     /**
      * Check if the jQuery Validation plugin is in use and re-validate the
      * select element if it is marked as being invalid. 
      */
     function checkValidation() {
-          if (select.form && typeof ($(select.form).validate) == "function" &&
-                  $(select).add($selectSingle).hasClass($(select.form)
-                          .validate().settings.errorClass))
-              $(select.form).validate().element(select);
+        if (select.form && typeof ($(select.form).validate) == "function" &&
+                $(select).add($selectSingle).hasClass($(select.form)
+                        .validate().settings.errorClass))
+        {
+            $(select.form).validate().element(select);
+        }
     }
     
     /* Publicly available methods */
     
     /**
-     * Get currently selected options, similar to using the code jQuery 
+     * Get/set the current value, similar to using the code jQuery
      * <code>.val()</code> method on a regular multiple selection element.
      * 
+     * @param value
+     *            An array of strings or a single string representing the value
+     *            to set as selected
      * @returns An array of values corresponding to the selected options
      */
-    this.val = function () {
+    this.val = function (value) {
+        if (value !== undefined) {
+            /* Re-enable options */
+            $('option', $selectSingle)
+                .prop('disabled', false).removeData('disabled');
+            
+            $list.empty();
+            
+            if (value !== null)
+                $.each($.makeArray(value), function (index, value) {
+                    add(value);
+                });
+        }
+        
         return $(select).val();
     };
-    
+
     /**
      * Add a new item to the selection.
      * 
@@ -383,7 +407,7 @@ $.selectList = function (select, options) {
      * Firefox 4 throws an error on removeAttr('size'), so we need to use the
      * removeAttribute() DOM method instead.
      */
-    $selectSingle.get(0).removeAttribute('size');
+    $selectSingle[0].removeAttribute('size');
 
     /* If there is a "title" attribute, we add it as the hint option. */
     if ($selectSingle.attr("title")) {
@@ -427,6 +451,8 @@ $.selectList = function (select, options) {
         if (keypress)
             /* Reset flags */
             keypress = change = click = false;
+        else if (first)
+            $selectSingle[0].selectedIndex = 0;
         
         enter = false;
     })
@@ -506,6 +532,14 @@ $.fn.selectList = function (options) {
         return this.filter('select').data('selectList');
 
     return this;
-};  
+};
+
+/* Use valHooks to override how the select element's value is set */
+var hookSet = $.valHooks.select.set;
+
+$.valHooks.select.set = function (elem, value) {
+    return $(elem).data('selectList') ?
+        $(elem).data('selectList').val(value) : hookSet.call(elem, value);
+};
 
 })(jQuery);
