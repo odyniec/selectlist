@@ -3,7 +3,7 @@ module("Basic");
 (function () {
 
 test("Initialization", function () {
-    expect(6);
+    expect(2);
 
     $('#t').append('<form id="f1">' +
             '<input id="i1" type="hidden" name="i" value="1" />' +
@@ -14,8 +14,6 @@ test("Initialization", function () {
             '</select>' +
             '</form>');
     
-    var serializedForm = $('#f1').serialize();
-
     $('#s1').selectList();
 
     ok($('#s1').selectList({ instance: true }) instanceof jQuery.selectList,
@@ -25,22 +23,6 @@ test("Initialization", function () {
     ok($('#s1').is(':not(:visible)'), 'Check if the original select element ' +
             'is not visible');
     
-    // TODO: consider moving these assertions to a separate test ("Values"?) 
-    deepEqual($('#s1').val(), null, 'Check if the .val() method ' +
-            'returns the correct value with no options selected');
-    
-    equal($('#f1').serialize(), 'i=1', 'Check if the serialized form data ' +
-            'is correct with no options selected');
-    
-    $('#s1').selectList({ instance: true }).add("1", "One");
-    $('#s1').selectList({ instance: true }).add("2", "Two");
-    
-    deepEqual($('#s1').val(), [ "1", "2" ], 'Check if the .val() method ' +
-            'returns the correct value with some options selected');
-
-    equal($('#f1').serialize(), 'i=1&s=1&s=2', 'Check if the serialized ' +
-            'form data is correct with some options selected');
-
     testCleanup();
 });
 
@@ -74,9 +56,7 @@ test("Pre-selecting options", function () {
     testCleanup();
 });
 
-test("Values", function () {
-    //expect(?);
-    
+test("List contents", function () {
     $('#t').append('<form id="f1">' +
             '<input id="i1" type="hidden" name="i" value="1" />' +
             '<select id="s1" name="s" multiple="multiple" title="Title">' +
@@ -115,23 +95,75 @@ test("Values", function () {
             "next added option has the correct label text (matching the " +
             "given value)");
 
-//    ok($("#s1").find("option:contains(\"Another two\")").length == 0, "Check " +
-//            "if adding an item with an existing value and nonexisting text " +
-//            "doesn't add a new option");
-    
     sl.add("4");
     
     equals($("#s1 option:last-child").val(), "4", "Check if adding an item " +
             "with a new value adds a new option to the original select " +
             "element");
-//    equals($("selectlist-select option:last-child").text(), "4", "Check if " +
-//            "the new option's text is the same as the value");
     
-//    sl.add("5", "Five");
-//    
-//    equals($("#s1 option:last-child").text(), "Five", "Check if adding " +
-//            "a second item with a new value and text adds a new option with " +
-//            "the correct text");
+    testCleanup();
+});
+
+test("Getting values", function () {
+    expect(4);
+
+    $('#t').append('<form id="f1">' +
+            '<input id="i1" type="hidden" name="i" value="1" />' +
+            '<select id="s1" name="s" multiple="multiple" title="Title">' +
+            '<option value="1">One</option>' +
+            '<option value="2">Two</option>' +
+            '<option value="3">Three</option>' +
+            '</select>' +
+            '</form>');
+    
+    var serializedForm = $('#f1').serialize();
+
+    $('#s1').selectList();
+
+    deepEqual($('#s1').val(), null, 'Check if the .val() method ' +
+            'returns the correct value with no options selected');
+    
+    equal($('#f1').serialize(), 'i=1', 'Check if the serialized form data ' +
+            'is correct with no options selected');
+    
+    $('#s1').selectList({ instance: true }).add("1", "One");
+    $('#s1').selectList({ instance: true }).add("2", "Two");
+    
+    deepEqual($('#s1').val(), [ "1", "2" ], 'Check if the .val() method ' +
+            'returns the correct value with some options selected');
+
+    equal($('#f1').serialize(), 'i=1&s=1&s=2', 'Check if the serialized ' +
+            'form data is correct with some options selected');
+
+    testCleanup();
+});
+
+test("Setting values", function () {
+    $('#t').append('<form id="f1">' +
+            '<input id="i1" type="hidden" name="i" value="1" />' +
+            '<select id="s1" name="s" multiple="multiple" title="Title">' +
+            '<option value="1">One</option>' +
+            '<option value="2">Two</option>' +
+            '<option value="3">Three</option>' +
+            '</select>' +
+            '</form>');
+
+    $("#s1").selectList();
+    
+    $("#s1").val("1");
+    
+    deepEqual($("#s1").val(), [ "1" ], "Check that a single value is set " +
+            "correctly");
+    
+    $("#s1").val([ 1, 3 ]);
+    
+    deepEqual($("#s1").val(), [ "1", "3" ], "Check that multiple values are " +
+            "set correctly");
+    
+    $("#s1").val(function () { return [ "1", "2" ]; });
+    
+    deepEqual($("#s1").val(), [ "1", "2" ], "Check that values can be set " +
+            "using a function");
     
     testCleanup();
 });
