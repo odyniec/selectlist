@@ -1,0 +1,69 @@
+.selectlist-select {
+  vertical-align: middle;
+}
+
+.selectlist-list {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 0 3px 3px 0;
+     -moz-border-radius: 0 3px 3px 0;
+          border-radius: 0 3px 3px 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  display: inline-block;
+  *display: inline;
+  line-height: 48px;
+	list-style: none;
+	margin: 0;
+	margin-bottom: 9px;
+	margin-left: -1px;
+  max-width: 300px;
+  min-height: 26px;
+  padding: 0px 0px 0px 4px;
+	padding-top: 0px;
+	vertical-align: top;
+	*zoom: 1;
+}
+
+.selectlist-list-below {
+  -webkit-border-radius: 0 0 3px 3px;
+     -moz-border-radius: 0 0 3px 3px;
+          border-radius: 0 0 3px 3px;
+  display: block;
+  *display: block;
+  line-height: 26px;
+  margin-left: 0;
+  min-height: 3px;
+  width: 214px;
+}
+
+.selectlist-item {
+  /* Icon from Font Awesome (http://fortawesome.github.com/Font-Awesome/) */
+  background: #e8e8e8 url("remove.png") no-repeat 96% center;
+  border-top: solid 1px #ccc;
+  border-right: solid 1px #999;
+  border-bottom: solid 1px #999;
+  border-left: solid 1px #ccc;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+  color: #555;
+  cursor: pointer;
+  display: inline;
+  float: left;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  padding: 1px 20px 2px 8px;
+  margin: 1px 4px 2px 0;
+  text-align: left;
+  text-shadow: 0px 0px 2px #eee;
+  white-space: nowrap;
+}
+
+.selectlist-list-below .selectlist-item {
+  display: inline-block;
+  *display: inline;
+  float: none;
+  *zoom: 1;
+}
