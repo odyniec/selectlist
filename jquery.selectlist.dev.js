@@ -1,6 +1,6 @@
 /*
  * selectList jQuery plugin
- * version 0.5
+ * version 0.5.1
  *
  * Copyright (c) 2009-2012 Michal Wojciechowski (odyniec.net)
  *
@@ -539,7 +539,7 @@ var hookSet = $.valHooks.select.set;
 
 $.valHooks.select.set = function (elem, value) {
     return $(elem).data('selectList') ?
-        $(elem).data('selectList').val(value) : hookSet.call(elem, value);
+        $(elem).data('selectList').val(value) : hookSet(elem, value);
 };
 
 })(jQuery);

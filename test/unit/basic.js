@@ -105,7 +105,7 @@ test("List contents", function () {
 });
 
 test("Getting values", function () {
-    expect(4);
+    expect(5);
 
     $('#t').append('<form id="f1">' +
             '<input id="i1" type="hidden" name="i" value="1" />' +
@@ -114,7 +114,12 @@ test("Getting values", function () {
             '<option value="2">Two</option>' +
             '<option value="3">Three</option>' +
             '</select>' +
-            '</form>');
+            '</form>' +
+            '<select id="s2" name="s2" multiple="multiple">' +
+            '<option value="1" selected="selected">One</option>' +
+            '<option value="2">Two</option>' +
+            '<option value="3" selected="selected">Three</option>' +
+            '</select>');
     
     var serializedForm = $('#f1').serialize();
 
@@ -135,6 +140,9 @@ test("Getting values", function () {
     equal($('#f1').serialize(), 'i=1&s=1&s=2', 'Check if the serialized ' +
             'form data is correct with some options selected');
 
+    deepEqual($('#s2').val(), [ "1", "3" ], 'Check if the .val() method ' +
+            'works for a regular select element');
+    
     testCleanup();
 });
 
@@ -146,7 +154,12 @@ test("Setting values", function () {
             '<option value="2">Two</option>' +
             '<option value="3">Three</option>' +
             '</select>' +
-            '</form>');
+            '</form>' +
+            '<select id="s2" name="s2" multiple="multiple">' +
+            '<option value="1">One</option>' +
+            '<option value="2">Two</option>' +
+            '<option value="3">Three</option>' +
+            '</select>');
 
     $("#s1").selectList();
     
@@ -164,6 +177,11 @@ test("Setting values", function () {
     
     deepEqual($("#s1").val(), [ "1", "2" ], "Check that values can be set " +
             "using a function");
+    
+    $('#s2').val([ 2, 3 ]);
+    
+    deepEqual($('#s2').val(), [ "2", "3" ], "Check if setting values work " +
+            "with a regular select element");
     
     testCleanup();
 });
