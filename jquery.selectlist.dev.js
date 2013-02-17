@@ -44,7 +44,10 @@ $.selectList = function (select, options) {
         first = 0,
         
         /* Flags for keeping track of events */
-        change, click, keypress, enter;
+        change, click, keypress, enter,
+
+        /* User agent */
+        ua = navigator.userAgent;
 
     /**
      * Make list item visible.
@@ -362,6 +365,10 @@ $.selectList = function (select, options) {
     };
 
     /* Initialization starts here */
+
+    /* Do the dreaded browser detection */
+    var msie = (/msie ([\w.]+)/i.exec(ua)||[])[1],
+        safari = /webkit/i.test(ua) && !/chrome/i.test(ua);
     
     this.setOptions(options = $.extend({
         addAnimate: true,
@@ -418,7 +425,7 @@ $.selectList = function (select, options) {
     /*
      * In MSIE and WebKit, we need to use the keydown event instead of keypress.
      */
-    keyEvent = $.browser.msie || $.browser.safari ? 'keydown' : 'keypress';
+    keyEvent = msie || safari ? 'keydown' : 'keypress';
     
     $selectSingle.bind(keyEvent, function (event) {
         keypress = true;
