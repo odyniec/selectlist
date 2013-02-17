@@ -71,33 +71,33 @@ test("List contents", function () {
     
     sl.add("1");
     
-    equals($(".selectlist-list").children().length, 1, "Check if the " +
+    equal($(".selectlist-list").children().length, 1, "Check if the " +
             "selected items list has one element");
-    equals($(".selectlist-item:last-child").text(), "One", "Check if the " +
+    equal($(".selectlist-item:last-child").text(), "One", "Check if the " +
             "added item has the correct label text");
     
     sl.add("2", "Two");
     
-    equals($(".selectlist-list").children().length, 2, "Check if the " +
+    equal($(".selectlist-list").children().length, 2, "Check if the " +
             "selected items list has two elements");
-    equals($(".selectlist-item:last-child").text(), "Two", "Check if the " +
+    equal($(".selectlist-item:last-child").text(), "Two", "Check if the " +
             "second added item has the correct label text");
 
     sl.add("2", "Another two");
     
-    equals($(".selectlist-item:last-child").text(), "Another two", "Check if " +
+    equal($(".selectlist-item:last-child").text(), "Another two", "Check if " +
             "the third added item has the correct label text (different than " +
             "option text)");
 
     sl.add("3");
     
-    equals($(".selectlist-item:last-child").text(), "Three", "Check if the " +
+    equal($(".selectlist-item:last-child").text(), "Three", "Check if the " +
             "next added option has the correct label text (matching the " +
             "given value)");
 
     sl.add("4");
     
-    equals($("#s1 option:last-child").val(), "4", "Check if adding an item " +
+    equal($("#s1 option:last-child").val(), "4", "Check if adding an item " +
             "with a new value adds a new option to the original select " +
             "element");
     
@@ -212,7 +212,7 @@ test("Misc", function () {
     
     $("#s1").selectList({
         onAdd: function (select, value, text) {
-            equals($(".selectlist-list li:last-child").text(),
+            equal($(".selectlist-list li:last-child").text(),
                 "<span />", "Check if special characters in option " +
                 "text are handled correctly");
             
@@ -239,7 +239,7 @@ test("Sorting", function () {
     deepEqual($("#s1").val(), [ "1", "2", "4"], "Check if the selected " +
             "options are sorted in ascending order");
     
-    equals($(".selectlist-list li").text().replace(" ", ""), "124",
+    equal($(".selectlist-list li").text().replace(" ", ""), "124",
             "Check if the list of selected items is sorted in ascending order");
 
     $("#s1").selectList({ instance: true }).add("3", "3");
@@ -247,7 +247,7 @@ test("Sorting", function () {
     deepEqual($("#s1").val(), [ "1", "2", "3", "4"], "Check if the selected " +
             "options are sorted in ascending order after an item is added");
 
-    equals($(".selectlist-list li").text().replace(" ", ""), "1234",
+    equal($(".selectlist-list li").text().replace(" ", ""), "1234",
             "Check if the list of selected items is sorted in ascending " +
             "order after an item is added");
 
@@ -256,7 +256,7 @@ test("Sorting", function () {
     deepEqual($("#s1").val(), [ "4", "3", "2", "1"], "Check if the selected " +
             "options are sorted in descending order");
     
-    equals($(".selectlist-list li").text().replace(" ", ""), "4321",
+    equal($(".selectlist-list li").text().replace(" ", ""), "4321",
             "Check if the list of selected items is sorted in descending " +
             "order");
 
@@ -266,7 +266,7 @@ test("Sorting", function () {
             "selected options are sorted in descending order after an item " +
             "is added");
 
-    equals($(".selectlist-list li").text().replace(" ", ""), "54321",
+    equal($(".selectlist-list li").text().replace(" ", ""), "54321",
             "Check if the list of selected items is " +
             "sorted in descending order after an item is added");
     
@@ -292,11 +292,11 @@ test("Options", function () {
     
     $("#s1").selectList({ classPrefix: "test" });
     
-    equals($(".test-select").length, 1, "classPrefix: Check if there is one " +
+    equal($(".test-select").length, 1, "classPrefix: Check if there is one " +
             "element with the -select class");
-    equals($(".test-list").length, 1, "classPrefix: Check if there is one " +
+    equal($(".test-list").length, 1, "classPrefix: Check if there is one " +
             "element with the -list class");
-    equals($(".test-item").length, 1, "classPrefix: Check if there is one " +
+    equal($(".test-item").length, 1, "classPrefix: Check if there is one " +
             "element with the -item class");
     
     testCleanup();
@@ -314,7 +314,7 @@ test("Options", function () {
     
     $(".selectlist-list li:eq(0)").click();
 
-    equals($(".selectlist-list li").length, 1, "clickRemove: Check if " +
+    equal($(".selectlist-list li").length, 1, "clickRemove: Check if " +
             "clicking an item on the list removes it from selection with " +
             "clickRemove set to true");
     
@@ -322,7 +322,7 @@ test("Options", function () {
     
     $(".selectlist-list li:eq(0)").click();
 
-    equals($(".selectlist-list li").length, 1, "clickRemove: Check if " +
+    equal($(".selectlist-list li").length, 1, "clickRemove: Check if " +
             "clicking an item on the list does not remove it from selection " +
             "with clickRemove set to false");
 
@@ -338,20 +338,20 @@ test("Options", function () {
     
     $("#s1").selectList();
     
-    equals($(".selectlist-select option[value=\"1\"]").data("disabled"), 1,
+    equal($(".selectlist-select option[value=\"1\"]").data("disabled"), 1,
             "duplicates: Check if the pre-selected option gets disabled with " +
             "duplicates set to false");
     
     $("#s1").selectList({ instance: true }).add($("option[value=\"2\"]"));
     
-    equals($(".selectlist-select option[value=\"2\"]").data("disabled"), 1,
+    equal($(".selectlist-select option[value=\"2\"]").data("disabled"), 1,
             "duplicates: Check if the added option gets disabled with " +
             "duplicates set to false");
     
     $("#s1").selectList({ duplicates: true, instance: true })
         .add($("option[value=\"3\"]"));
     
-    equals($(".selectlist-select option[value=\"3\"]").data("disabled"),
+    equal($(".selectlist-select option[value=\"3\"]").data("disabled"),
             undefined, "duplicates: Check if the added option does not get " +
             "disabled with duplicates set to true");
     
@@ -368,9 +368,9 @@ test("Options", function () {
         
     $("#s1").selectList({ list: "#ol1" })
     
-    equals($("#ol1 li").length, 1, "list: Check if the custom list container " +
+    equal($("#ol1 li").length, 1, "list: Check if the custom list container " +
             "has one element");
-    equals($("#ol1 li").text(), "One", "list: Check if the item text is " +
+    equal($("#ol1 li").text(), "One", "list: Check if the item text is " +
             "correct");
     
     testCleanup();
@@ -385,15 +385,17 @@ test("Options", function () {
     
     $("#s1").selectList({ template: "<li><i>%text%</i></li>" });
     
-    equals($(".selectlist-list li i").length, 1, "template: Check if the " +
+    equal($(".selectlist-list li i").length, 1, "template: Check if the " +
             "selected list item has the correct HTML structure");
-    equals($(".selectlist-list li i").text(), "One", "template: Check if the " +
+    equal($(".selectlist-list li i").text(), "One", "template: Check if the " +
             "selected list item has the correct text");
 
     testCleanup();
 });
 
 test("Callback functions", function () {
+    expect(7);
+
     $("#t").append('<form id="f1">' +
             '<input id="i1" type="hidden" name="i" value="1" />' +
             '<select id="s1" name="s" multiple="multiple" title="Title">' +
@@ -405,17 +407,17 @@ test("Callback functions", function () {
     
     var sl = $("#s1").selectList({ instance: true,
         onAdd: function (select, value, text) {
-            equals(value, "1", "Check if the callback function reports " +
+            equal(value, "1", "Check if the callback function reports " +
                     "the correct value when an item is added");
-            equals(text, "One", "Check if the callback function reports " +
+            equal(text, "One", "Check if the callback function reports " +
                     "the correct text when an item is added")
 
             sl.remove("1");
         },
         onRemove: function (select, value, text) {
-            equals(value, "1", "Check if the callback function reports " +
+            equal(value, "1", "Check if the callback function reports " +
                     "the correct value when an item is removed");
-            equals(text, "One", "Check if the callback function reports " +
+            equal(text, "One", "Check if the callback function reports " +
                     "the correct text when an item is removed");
             
             checkCustomText();
@@ -428,13 +430,13 @@ test("Callback functions", function () {
     var checkCustomText = function () {
         sl.setOptions({
             onAdd: function (select, value, text) {
-                equals(text, "Another two", "Check if the callback function " +
+                equal(text, "Another two", "Check if the callback function " +
                         "reports the correct text when an item is added");
                 
                 sl.remove("2");
             },
             onRemove: function (select, value, text) {
-                equals(text, "Another two", "Check if the callback function " +
+                equal(text, "Another two", "Check if the callback function " +
                         "reports the correct text when an item is removed");
                 
                 checkMultipleCalls();
@@ -452,13 +454,14 @@ test("Callback functions", function () {
             onRemove: function (select, value, text) {
                 count++;
                 
-                if (count == 2)
+                if (count == 2) {
                     ok(true, "Check if the onRemove callback is called " +
                             "twice when two items are removed with a single " +
                             "remove() call");
                 
-                testCleanup();
-                start();
+                    testCleanup();
+                    start();
+                }
             }
         });
         
@@ -490,30 +493,30 @@ test("Validation", function () {
         }
     });
     
-    equals(validator.element("#s1"), false, "Check if validation is " +
+    equal(validator.element("#s1"), false, "Check if validation is " +
             "unsuccessful when no options are selected");
-    equals($("#s1").next().text(), "required", "Check if the " +
+    equal($("#s1").next().text(), "required", "Check if the " +
             "appropriate error type is triggered when no options are selected");
     
     $("#s1").selectList({ instance: true }).add("1");
     
-    equals(validator.element("#s1"), false, "Check if validation is " +
+    equal(validator.element("#s1"), false, "Check if validation is " +
             "unsuccessful when too few options are selected");
-    equals($("#s1").next().text(), "minlength", "Check if the " +
+    equal($("#s1").next().text(), "minlength", "Check if the " +
             "appropriate error type is triggered when too few options are " +
             "selected");
     
     $("#s1").selectList({ instance: true }).add("2");
     
-    equals(validator.element("#s1"), true, "Check if validation is " +
+    equal(validator.element("#s1"), true, "Check if validation is " +
             "successful when the right number of options are selected");
     
     $("#s1").selectList({ instance: true }).add("3");
     $("#s1").selectList({ instance: true }).add("4");
     
-    equals(validator.element("#s1"), false, "Check if validation is " +
+    equal(validator.element("#s1"), false, "Check if validation is " +
             "unsuccessful when too many options are selected");
-    equals($("#s1").next().text(), "maxlength", "Check if the " +
+    equal($("#s1").next().text(), "maxlength", "Check if the " +
             "appropriate error type is triggered when too many options are " +
             "selected");
     
