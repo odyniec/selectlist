@@ -2,7 +2,7 @@
  * selectList jQuery plugin
  * version 0.6
  *
- * Copyright (c) 2009-2012 Michal Wojciechowski (odyniec.net)
+ * Copyright (c) 2009-2013 Michal Wojciechowski (odyniec.net)
  *
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
