@@ -1,6 +1,6 @@
 /*
  * selectList jQuery plugin
- * version 0.5.1
+ * version 0.6
  *
  * Copyright (c) 2009-2012 Michal Wojciechowski (odyniec.net)
  *
@@ -203,13 +203,6 @@ $.selectList = function (select, options) {
                 remove($(this));
         });
         
-        /*
-         * If there is a hint (first == 1), set it back as the selected option
-         * in the select element.
-         */
-//        if (first && !keypress)
-//            $selectSingle[0].selectedIndex = 0;
-
         /* Callback function that will be called after the item is added */
         var callback = function () {
             if (callHandler !== false)
@@ -451,6 +444,10 @@ $.selectList = function (select, options) {
         if (keypress)
             /* Reset flags */
             keypress = change = click = false;
+        /* 
+         * If there is a hint (first == 1), set it back as the selected option
+         * in the select element.
+         */
         else if (first)
             $selectSingle[0].selectedIndex = 0;
         
