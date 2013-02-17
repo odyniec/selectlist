@@ -470,21 +470,6 @@ $.selectList = function (select, options) {
      * elements (works in FF3 and Opera, does not work in MSIE and Chrome).
      */
     $selectSingle.find('option').click(function (event) {
-        /*
-         * In Firefox, clicking the select element to open the list of options
-         * sometimes triggers the click event handler for the item that's
-         * currently at the top, resulting in it being added to the selection
-         * list. To prevent this, we need to exit the handler if the click has
-         * occurred within the select element's boundaries.
-         */
-        if ($.browser.mozilla && event.pageX >= $selectSingle.offset().left &&
-                event.pageX <= $selectSingle.offset().left + 
-                    $selectSingle.outerWidth() &&
-                event.pageY >= $selectSingle.offset().top &&
-                event.pageY <= $selectSingle.offset().top + 
-                    $selectSingle.outerHeight())
-            return false;
-        
         click = true;
         
         if (!($(this).attr('disabled') || $(this).data('disabled') || keypress
