@@ -1,4 +1,4 @@
-/*
+/*!
  * selectList jQuery plugin
  * version 0.6
  *
