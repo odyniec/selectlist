@@ -2,12 +2,25 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('selectlist.jquery.json'),
         uglify: {
-            options: {
-                banner: '/*! <%= pkg.name %> <%= pkg.version %> */ '
+            min: {
+                options: {
+                    banner: '/*! <%= pkg.name %> <%= pkg.version %> */ '
+                },
+                files: {
+                    'dist/jquery.<%= pkg.name %>-<%= pkg.version %>/scripts/jquery.<%= pkg.name %>.min.js':
+                        [ 'jquery.<%= pkg.name %>.dev.js' ]
+                }
             },
-            dist: {
-                src: 'jquery.<%= pkg.name %>.dev.js',
-                dest: 'dist/jquery.<%= pkg.name %>-<%= pkg.version %>/scripts/jquery.<%= pkg.name %>.min.js'
+            plain: {
+                options: {
+                    beautify: true,
+                    mangle: false,
+                    preserveComments: 'some'
+                },
+                files: {
+                    'dist/jquery.<%= pkg.name %>-<%= pkg.version %>/scripts/jquery.<%= pkg.name %>.js':
+                        [ 'jquery.<%= pkg.name %>.dev.js' ]
+                }
             }
         },
         copy: {
@@ -16,6 +29,10 @@ module.exports = function(grunt) {
                     {
                         expand: true, cwd: 'distfiles/', src: [ '**' ],
                         dest: 'dist/jquery.<%= pkg.name %>-<%= pkg.version %>/'
+                    },
+                    {
+                        'dist/jquery.<%= pkg.name %>-<%= pkg.version %>/scripts/jquery.<%= pkg.name %>.dev.js':
+                            [ 'jquery.<%= pkg.name %>.dev.js' ]
                     }
                 ]
             }
