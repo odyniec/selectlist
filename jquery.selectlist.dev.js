@@ -1,6 +1,6 @@
 /*!
  * selectList jQuery plugin
- * version 0.6
+ * version 0.6.1
  *
  * Copyright (c) 2009-2013 Michal Wojciechowski (odyniec.net)
  *

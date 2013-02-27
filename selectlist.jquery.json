@@ -1,7 +1,7 @@
 {
     "name": "selectlist",
     "title": "SelectList - multiple selection plugin",
-    "version": "0.6.0",
+    "version": "0.6.1",
     "description": "SelectList is a plugin that replaces the standard HTML multiple select element with a nicer and more user-friendly interface. The user selects a number of items from a drop-down list, and the selected items are displayed below.",
     "keywords": [ "form", "select", "multiple" ],
     "author": {
@@ -23,4 +23,3 @@
         "jquery": ">=1.7"
     }
 }
-
